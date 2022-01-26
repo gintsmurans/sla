@@ -1,4 +1,15 @@
 services:
+    # Postgresql Database
+    pgdb:
+        image: postgres:13-alpine
+        ports:
+            - 5437:5432
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: mypasswd
+        volumes:
+            - ./docker/pgdb/data:/docker-entrypoint-initdb.d
+
     # Common image for development and build
     common:
         image: static_php_common
@@ -17,11 +28,12 @@ services:
         env_file:
             - .env
         ports:
-            - "5000:5000"
+            - "5010:5000"
         volumes:
             - ./:/srv/sites/web_mounted:cached
         depends_on:
             - common
+            - pgdb
 
     # Build service
     build:
