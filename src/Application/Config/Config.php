@@ -4,7 +4,6 @@ use Symfony\Component\Dotenv\Dotenv;
 
 use \Core\Models\Logger;
 
-
 /**
  * We are gonna start with loading of the .env files
  */
@@ -115,7 +114,7 @@ $config['url_prefixes'] = [];
 | Possible formats: Application/Module/Filename, Module/Filename, Filename (only to load global config)
 |--------------------------------------------------------------------------
 */
-$config['autoload_configs'] = ['App'];
+$config['autoload_configs'] = ['App', 'Db', 'Twitch'];
 $config['autoload_helpers'] = ['Bootstrap'];
 
 /*

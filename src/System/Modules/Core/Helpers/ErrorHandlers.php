@@ -54,19 +54,9 @@ function sp_exception_handler($exception)
         http_response_code(500);
     }
 
-    if (Logger::contains(Config::$items['logging']['display_level'], 'error')) {
-        $errorMsg = sp_format_exception($exception, false, true);
-        echo $errorMsg;
-    }
-
-    if (Logger::contains(Config::$items['logging']['log_level'], 'error')) {
-        $errorMsg = sp_format_exception($exception, true, false);
-        error_log($errorMsg);
-    }
-
-    if (Logger::contains(Config::$items['logging']['report_level'], 'error')) {
-        sp_send_error_email($exception);
-    }
+    $errorMsgPlain = sp_format_exception($exception, false, false);
+    $errorMsgRich = sp_format_exception($exception, false, true);
+    Logger::log('error', $errorMsgPlain, $exception->getTrace(), $errorMsgRich);
 
     exit(10);
 }
@@ -76,26 +66,25 @@ function sp_exception_handler($exception)
  *
  * @see sp_format_exception()
  * @access public
- * @param Exception|ErrorException|mixed $e
+ * @param String $e
  * @return void
  */
-function sp_send_error_email($e)
+function sp_send_error_email($message)
 {
     static $last_error = ['time' => 0];
 
-    $e_formatted = sp_format_exception($e, true, true);
     $debug_email = Config::$items['logging']['report_email'];
     $email_func = Config::$items['logging']['report_email_func'];
-    if (!empty($debug_email) && is_callable($email_func) && (time() - $last_error['time'] >= 30 || $last_error['exception'] != $e_formatted)) {
+    if (!empty($debug_email) && is_callable($email_func) && (time() - $last_error['time'] >= 30 || $last_error['exception'] != $message)) {
         $email_func(
             $debug_email, // To
             'PHP ERROR: "'.$_SERVER['HTTP_HOST'].'"', // Subject
-            $e_formatted, // Message
+            $message, // Message
             "Content-Type: text/html; charset=utf-8", // Headers
             'error'
         );
         $last_error['time'] = time();
-        $last_error['exception'] = $e_formatted;
+        $last_error['exception'] = $message;
     }
 }
 

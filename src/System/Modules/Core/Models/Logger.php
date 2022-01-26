@@ -4,7 +4,6 @@ namespace Core\Models;
 
 use \Core\Models\Timers;
 
-
 /**
  * Core logger class.
  */
@@ -187,14 +186,33 @@ class Logger
     /**
      * Logs with an arbitrary level.
      *
-     * @param  mixed  $level
-     * @param  string $message
-     * @param  array  $context
+     * @param string $level
+     * @param string $message
+     * @param array  $context
+     *
      * @return void
      */
-    public static function log($level, $message, array $context = array())
+    public static function log(string $level, string $message, array $context = array(), string $formattedMessage = null)
     {
         self::$logs[] = ['level' => $level, 'message' => $message, 'context' => $context];
+
+        // Output/Log/Send error message
+        $formattedLevel = strtoupper($level);
+        if (Logger::contains(Config::$items['logging']['display_level'], $level)) {
+            if (!empty($formattedMessage)) {
+                echo "{$formattedLevel}: {$formattedMessage}";
+            } else {
+                echo "{$formattedLevel}: {$message}";
+            }
+        }
+
+        if (Logger::contains(Config::$items['logging']['log_level'], $level)) {
+            error_log($message);
+        }
+
+        if (Logger::contains(Config::$items['logging']['report_level'], $level)) {
+            sp_send_error_email(!empty($formattedMessage) ? $formattedMessage : $message);
+        }
     }
 
     /*
