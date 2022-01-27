@@ -138,7 +138,7 @@ class Db
             $log = $query;
             if (!empty($data)) {
                 $log_data = array_map(
-                    function($item) {
+                    function ($item) {
                         return (is_integer($item) == true ? $item : "'".$item."'");
                     },
                     (array)$data
@@ -225,7 +225,7 @@ class Db
         $values = implode(', ', $values);
 
         // Run Query
-        $query = self::query("INSERT INTO {$table} ({$keys}) VALUES ({$values}){$returning}", $params, $name);
+        $query = self::query("INSERT INTO {$table} ({$keys}) VALUES ({$values}) {$returning} ", $params, $name);
 
         return (empty($returning) ? $query : $query->fetch());
     }

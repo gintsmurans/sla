@@ -1,0 +1,7 @@
+{% if session.user %}
+<a class="navbar-brand ms-auto" href="#">
+    <img src="{{ session.user.profile_image_url }}" alt="" width="30" height="24"
+        class="d-inline-block align-text-top">
+    {{ session.user.ref_username }}
+</a>
+{% endif %}

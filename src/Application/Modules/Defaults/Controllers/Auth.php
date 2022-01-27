@@ -6,6 +6,7 @@ use \Core\Controllers\Controller;
 use \Core\Models\Timers;
 use \Core\Models\Config;
 use \Core\Models\Router;
+use \Core\Models\Db;
 
 use \Defaults\Models\Auth as AuthModel;
 
@@ -62,12 +63,42 @@ class Auth extends Controller
             $token = $oauth->getUserAccessToken($code, $callbackUri);
             if ($token->getStatusCode() == 200) {
                 // Below is the returned token data
-                $data = json_decode($token->getBody()->getContents());
+                $data = json_decode($token->getBody()->getContents(), true);
 
                 // Your bearer token
-                $twitch_access_token = $data->access_token ?? null;
+                $twitch_access_token = $data['access_token'] ?? '';
+                $twitch_refresh_token = $data['refresh_token'] ?? '';
 
-                print_r($data);
+                // Make the API call. A ResponseInterface object is returned.
+                $response = $twitchApi->getUsersApi()->getUserByAccessToken($twitch_access_token);
+
+                // Get and decode the actual content sent by Twitch.
+                $responseContent = json_decode($response->getBody()->getContents(), true);
+                if (empty($responseContent['data'][0])) {
+                    throw new \Exception('There was no user data in Twitch response');
+                }
+
+                $twitchUserData = $responseContent['data'][0];
+
+                // Find out if we have the user
+                $status = AuthModel::loadUserSession(refUserId: $twitchUserData['id']);
+                if ($status === true) {
+                    Router::redirect();
+                    return;
+                }
+
+                // If not, lets add new one into db
+                $userData = [
+                    'ref_id' => $twitchUserData['id'],
+                    'ref_username' => $twitchUserData['login'],
+                    'email' => $twitchUserData['email'],
+                    'profile_image_url' => $twitchUserData['profile_image_url'],
+                    'ref_access_token' => $twitch_access_token,
+                    'ref_refresh_token' => $twitch_access_token,
+                ];
+                $user = Db::insert('users', $userData, returning: 'RETURNING id');
+                AuthModel::loadUserSession($user['id']);
+                Router::redirect();
             } else {
                 // TODO: Handle Error
                 echo 'Error getting data from Twitch';
