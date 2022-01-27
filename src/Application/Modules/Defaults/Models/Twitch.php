@@ -207,29 +207,30 @@ class Twitch
                 FROM tags
                 WHERE title IS NULL
                 ORDER BY tag_id ASC
-                LIMIT 100
             "
         );
         $allTags = array_column($tmp, 'tag_id');
 
-        // Get user followed streams
-        $response = $tagsApi->getAllStreamTags($accessToken, $allTags);
-        if ($response->getStatusCode() == 200) {
-            $allTagsResponse = json_decode($response->getBody()->getContents(), true);
-            if (!empty($allTagsResponse['data'])) {
-                Db::beginTransaction();
+        Db::beginTransaction();
 
-                foreach ($allTagsResponse['data'] as $tagItem) {
-                    $tagData = [
-                        'title' => $tagItem['localization_names']['en-us'],
-                        'description' => $tagItem['localization_descriptions']['en-us'],
-                    ];
-                    Db::update('tags', $tagData, ['tag_id' => $tagItem['tag_id']]);
+        while (!empty($allTags)) {
+            $tags = array_splice($allTags, 0, 100);
+            $response = $tagsApi->getAllStreamTags($accessToken, $tags);
+            if ($response->getStatusCode() == 200) {
+                $allTagsResponse = json_decode($response->getBody()->getContents(), true);
+                if (!empty($allTagsResponse['data'])) {
+                    foreach ($allTagsResponse['data'] as $tagItem) {
+                        $tagData = [
+                            'title' => $tagItem['localization_names']['en-us'],
+                            'description' => $tagItem['localization_descriptions']['en-us'],
+                        ];
+                        Db::update('tags', $tagData, ['tag_id' => $tagItem['tag_id']]);
+                    }
                 }
-
-                Db::commit();
             }
         }
+
+        Db::commit();
     }
 
 
