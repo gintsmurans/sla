@@ -90,6 +90,8 @@ class Twitch
 
             return true;
         } catch (\Exception $e) {
+            $msg = "Failed to refresh access token: ".$e->getMessage();
+            Logger::log(Logger::ERROR, $msg);
             return false;
         }
     }

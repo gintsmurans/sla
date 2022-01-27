@@ -101,7 +101,7 @@ class Auth extends Controller
                         'email' => $twitchUserData['email'],
                         'profile_image_url' => $twitchUserData['profile_image_url'],
                         'ref_access_token' => $twitch_access_token,
-                        'ref_refresh_token' => $twitch_access_token,
+                        'ref_refresh_token' => $twitch_refresh_token,
                     ];
                     $user = Db::insert('users', $userData, returning: 'RETURNING id');
                 }
