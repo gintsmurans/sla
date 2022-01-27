@@ -118,7 +118,6 @@ class Twitch
         $allTags = array_column($allTags, 'tag_id');
         $newTags = [];
 
-        Db::beginTransaction();
         Db::query("TRUNCATE top_streams RESTART IDENTITY");
 
         while ($count < 1000) {
@@ -184,8 +183,6 @@ class Twitch
             ];
             Db::insert('tags', $tagData);
         }
-
-        Db::commit();
     }
 
     public static function syncTags()
@@ -213,8 +210,6 @@ class Twitch
         );
         $allTags = array_column($tmp, 'tag_id');
 
-        Db::beginTransaction();
-
         while (!empty($allTags)) {
             $tags = array_splice($allTags, 0, 100);
             $response = $tagsApi->getAllStreamTags($accessToken, $tags);
@@ -231,8 +226,6 @@ class Twitch
                 }
             }
         }
-
-        Db::commit();
     }
 
 
