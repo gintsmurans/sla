@@ -61,7 +61,7 @@ class Twitch
         }
     }
 
-    public static function refreshToken($userId)
+    public static function refreshToken($userId): bool
     {
         // Find user access token
         $user = Auth::userById($userId);
@@ -75,9 +75,8 @@ class Twitch
         );
         $authApi = $twitchApi->getOauthApi();
 
-        $response = $authApi->refreshToken($user['ref_refresh_token']);
-        if ($response->getStatusCode() == 200) {
-            // Below is the returned token data
+        try {
+            $response = $authApi->refreshToken($user['ref_refresh_token']);
             $responseData = json_decode($response->getBody()->getContents(), true);
 
             // Your bearer token
@@ -88,9 +87,10 @@ class Twitch
                 'ref_refresh_token' => $twitch_refresh_token,
             ];
             Db::update('users', $userData, ['id' => $user['id']]);
-        } else {
-            // TODO: Handle Error
-            echo 'Error getting data from Twitch';
+
+            return true;
+        } catch (\Exception $e) {
+            return false;
         }
     }
 

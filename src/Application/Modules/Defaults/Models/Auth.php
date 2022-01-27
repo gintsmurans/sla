@@ -28,6 +28,11 @@ class Auth
         return true;
     }
 
+    public static function logout(): void
+    {
+        unset($_SESSION['user'], $_SESSION['user_timestamp']);
+    }
+
     public static function redirectToAuth(): void
     {
         Router::redirect('defaults/auth');

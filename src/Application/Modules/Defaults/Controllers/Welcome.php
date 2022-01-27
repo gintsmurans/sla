@@ -156,7 +156,11 @@ class Welcome extends Controller
 
         // Refresh data
         Timers::startTimer();
-        Twitch::refreshToken($_SESSION['user']['id']);
+        $status = Twitch::refreshToken($_SESSION['user']['id']);
+        if ($status == false) {
+            Auth::logout();
+            Router::redirect();
+        }
         Timers::stopTimer('Refresh access token');
 
         Timers::startTimer();
