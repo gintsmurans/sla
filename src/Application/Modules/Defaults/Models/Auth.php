@@ -30,7 +30,11 @@ class Auth
 
     public static function logout(): void
     {
-        unset($_SESSION['user'], $_SESSION['user_timestamp']);
+        unset(
+            $_SESSION['user'],
+            $_SESSION['user_timestamp'],
+            $_SESSION['last_data_refresh']
+        );
     }
 
     public static function redirectToAuth(): void

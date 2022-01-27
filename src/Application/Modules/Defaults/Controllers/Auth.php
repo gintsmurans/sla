@@ -22,6 +22,12 @@ class Auth extends Controller
         self::render('login.html');
     }
 
+    public static function logout()
+    {
+        AuthModel::logout();
+        Router::redirect();
+    }
+
     public static function redirect()
     {
         $helixGuzzleClient = new HelixGuzzleClient(Config::$items['services']['twitch']['client_id']);
@@ -77,7 +83,6 @@ class Auth extends Controller
                 if (empty($responseContent['data'][0])) {
                     throw new \Exception('There was no user data in Twitch response');
                 }
-
                 $twitchUserData = $responseContent['data'][0];
 
                 // Find out if we have the user
@@ -102,7 +107,7 @@ class Auth extends Controller
                 }
 
                 AuthModel::loadUserSession($user['id']);
-                Router::redirect();
+                Router::redirect('defaults/welcome/refresh');
             } else {
                 // TODO: Handle Error
                 echo 'Error getting data from Twitch';

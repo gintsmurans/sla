@@ -1,7 +1,16 @@
 {% if session.user %}
-<a class="navbar-brand ms-auto" href="#">
-    <img src="{{ session.user.profile_image_url }}" alt="" width="30" height="24"
-        class="d-inline-block align-text-top">
-    {{ session.user.ref_username }}
-</a>
+<ul class="navbar-nav ms-auto">
+    <li class="nav-item">
+        <a class="nav-link" href="#">
+            <img src="{{ session.user.profile_image_url }}" alt="" width="30" height="24"
+                class="d-inline-block align-text-top">
+            {{ session.user.ref_username }}
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ siteUrl('defaults/auth/logout') }}">
+            <span class="fas fa-sign-out-alt"></span>
+        </a>
+    </li>
+</ul>
 {% endif %}
