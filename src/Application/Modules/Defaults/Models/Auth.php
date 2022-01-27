@@ -11,6 +11,7 @@ class Auth
     {
         if (empty($_SESSION['user']) || empty($_SESSION['user_timestamp'])) {
             if ($redirect === true) {
+                self::logout();
                 self::redirectToAuth();
             }
             return false;
@@ -19,6 +20,7 @@ class Auth
         $now = time();
         if ($now - $_SESSION['user_timestamp'] > 3600) {
             if ($redirect === true) {
+                self::logout();
                 self::redirectToAuth();
             }
             return false;
