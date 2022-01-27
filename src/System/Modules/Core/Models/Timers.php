@@ -92,13 +92,13 @@ class Timers
     {
         global $microtime;
 
-        Logger::info('Total execution time: '.round(microtime(true) - $microtime, 5)." seconds;");
-        Logger::info('Memory used: '.round(memory_get_usage() / 1024 / 1024, 4)." MB;\n");
+        Logger::info('Total execution time: '.round(microtime(true) - $microtime, 5)." seconds;", skipOutput: true);
+        Logger::info('Memory used: '.round(memory_get_usage() / 1024 / 1024, 4)." MB;\n", skipOutput: true);
 
         if (!empty(self::$finished_timers)) {
             krsort(self::$finished_timers);
             foreach (self::$finished_timers as $key => $value) {
-                Logger::info("[{$value}s] {$key}");
+                Logger::info("[{$value}s] {$key}", skipOutput: true);
             }
         }
     }

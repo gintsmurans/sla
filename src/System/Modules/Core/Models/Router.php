@@ -868,7 +868,7 @@ class Router
 
         // Set url to the method
         self::$method_url = self::$module.'/';
-        self::$method_url .= str_replace(self::$module.'/Controllers/', '', self::$file);
+        self::$method_url .= str_replace(self::$module.'/Controllers/', '', self::$file ?? '');
         self::$method_url .= '/'.self::$method;
         self::$method_url = self::namespaceToUrl(self::$method_url);
     }

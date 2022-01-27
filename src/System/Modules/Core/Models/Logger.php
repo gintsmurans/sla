@@ -83,9 +83,9 @@ class Logger
      * @param  array  $context
      * @return void
      */
-    public static function emergency($message, array $context = array())
+    public static function emergency(string $message, array $context = array(), bool $skipOutput = false)
     {
-        self::log(Logger::EMERGENCY, $message, $context);
+        self::log(Logger::EMERGENCY, $message, $context, skipOutput: $skipOutput);
     }
 
     /**
@@ -98,9 +98,9 @@ class Logger
      * @param  array  $context
      * @return void
      */
-    public static function alert($message, array $context = array())
+    public static function alert(string $message, array $context = array(), bool $skipOutput = false)
     {
-        self::log(Logger::ALERT, $message, $context);
+        self::log(Logger::ALERT, $message, $context, skipOutput: $skipOutput);
     }
 
     /**
@@ -112,9 +112,9 @@ class Logger
      * @param  array  $context
      * @return void
      */
-    public static function critical($message, array $context = array())
+    public static function critical(string $message, array $context = array(), bool $skipOutput = false)
     {
-        self::log(Logger::CRITICAL, $message, $context);
+        self::log(Logger::CRITICAL, $message, $context, skipOutput: $skipOutput);
     }
 
     /**
@@ -125,9 +125,9 @@ class Logger
      * @param  array  $context
      * @return void
      */
-    public static function error($message, array $context = array())
+    public static function error(string $message, array $context = array(), bool $skipOutput = false)
     {
-        self::log(Logger::ERROR, $message, $context);
+        self::log(Logger::ERROR, $message, $context, skipOutput: $skipOutput);
     }
 
     /**
@@ -140,9 +140,9 @@ class Logger
      * @param  array  $context
      * @return void
      */
-    public static function warning($message, array $context = array())
+    public static function warning(string $message, array $context = array(), bool $skipOutput = false)
     {
-        self::log(Logger::WARNING, $message, $context);
+        self::log(Logger::WARNING, $message, $context, skipOutput: $skipOutput);
     }
 
     /**
@@ -152,9 +152,9 @@ class Logger
      * @param  array  $context
      * @return void
      */
-    public static function notice($message, array $context = array())
+    public static function notice(string $message, array $context = array(), bool $skipOutput = false)
     {
-        self::log(Logger::NOTICE, $message, $context);
+        self::log(Logger::NOTICE, $message, $context, skipOutput: $skipOutput);
     }
 
     /**
@@ -166,9 +166,9 @@ class Logger
      * @param  array  $context
      * @return void
      */
-    public static function info($message, array $context = array())
+    public static function info(string $message, array $context = array(), bool $skipOutput = false)
     {
-        self::log(Logger::INFO, $message, $context);
+        self::log(Logger::INFO, $message, $context, skipOutput: $skipOutput);
     }
 
     /**
@@ -178,9 +178,9 @@ class Logger
      * @param  array  $context
      * @return void
      */
-    public static function debug($message, array $context = array())
+    public static function debug(string $message, array $context = array(), bool $skipOutput = false)
     {
-        self::log(Logger::DEBUG, $message, $context);
+        self::log(Logger::DEBUG, $message, $context, skipOutput: $skipOutput);
     }
 
     /**
@@ -192,9 +192,17 @@ class Logger
      *
      * @return void
      */
-    public static function log(string $level, string $message, array $context = array(), string $formattedMessage = null)
-    {
+    public static function log(
+        string $level,
+        string $message,
+        array $context = array(),
+        string $formattedMessage = null,
+        bool $skipOutput = false
+    ) {
         self::$logs[] = ['level' => $level, 'message' => $message, 'context' => $context];
+        if ($skipOutput == true) {
+            return;
+        }
 
         // Output/Log/Send error message
         $formattedLevel = strtoupper($level);
