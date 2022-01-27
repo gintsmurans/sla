@@ -1,16 +1,189 @@
 {% extends "Defaults/Views/layout.html" %}
 
 {% block content %}
-    <div class="py-5">
-        <h1>Welcome!</h1>
+    <div class="py-2 text-end">
+        <a href="{{ siteUrl('defaults/welcome/refresh') }}">
+            <span class="fas fa-sync"></span>
+            Refresh
+        </a>
+    </div>
+    <div>
+        <h1>Stats</h1>
 
-        <br /><br />
-        This is your `Hello World` page.
-        <br /><br /><br />
+        <div class="d-flex">
+            <div class="card mx-2">
+                <div class="card-header">Streams per game</div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Game title</th>
+                                <th>Streams</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in top_streams %}
+                            <tr>
+                                <td>{{ loop.index }}.</td>
+                                <td>{{ item.game_name }}</td>
+                                <td>{{ item.count }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
+            <div class="card mx-2">
+                <div class="card-header">Top Games</div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Game title</th>
+                                <th>Viewers</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in top_games %}
+                            <tr>
+                                <td>{{ loop.index }}.</td>
+                                <td>{{ item.game_name }}</td>
+                                <td>{{ item.viewer_count }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-        {% if config.debug %}
-        <em class="small">* Turning off debug mode will hide example navigation item.</em>
-        {% endif %}
+            <div class="card mx-2 align-self-start">
+                <div class="card-header">Median Viewers</div>
+                <div class="card-body text-center fs-3">{{ median_number }}</div>
+            </div>
+        </div>
+
+        <div class="d-flex mt-4">
+            <div class="card mx-2">
+                <div class="card-header">Top 100 streams</div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Channel name</th>
+                                <th>Stream title</th>
+                                <th>Viewers</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in top_100_streams %}
+                            <tr>
+                                <td>{{ loop.index }}.</td>
+                                <td>
+                                    <a href="https://www.twitch.tv/{{ item.channel_name }}">{{ item.channel_name }}</a>
+                                </td>
+                                <td>{{ item.title }}</td>
+                                <td>{{ item.viewer_count }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex mt-4">
+            <div class="card mx-2">
+                <div class="card-header">Streams by Start time</div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Time</th>
+                                <th>Streams</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in streams_start_time %}
+                            <tr>
+                                <td>{{ loop.index }}.</td>
+                                <td>{{ item.start_time }}</td>
+                                <td>{{ item.count }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex mt-4">
+            <div class="card mx-2">
+                <div class="card-header">Followed Streams</div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Channel name</th>
+                                <th>Stream title</th>
+                                <th>Viewers</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in following_streams %}
+                            <tr>
+                                <td>{{ loop.index }}.</td>
+                                <td>
+                                    <a href="https://www.twitch.tv/{{ item.channel_name }}">{{ item.channel_name }}</a>
+                                </td>
+                                <td>{{ item.title }}</td>
+                                <td>{{ item.viewer_count }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card mx-2 align-self-start">
+                <div class="card-header">Lowest viewer count needs</div>
+                <div class="card-body text-center fs-3">{{ lowest_streamer_needs }}</div>
+            </div>
+        </div>
+
+        <div class="d-flex mt-4">
+            <div class="card mx-2">
+                <div class="card-header">Shared tags</div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Tag name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for tag_id in shared_tags %}
+                            <tr>
+                                <td>{{ loop.index }}.</td>
+                                <td>
+                                    <a
+                                        href="https://www.twitch.tv/directory/tags/{{ tag_id }}"
+                                        title="{{ all_tags[tag_id].description }}">
+                                        {{ all_tags[tag_id].title }}
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}

@@ -81,22 +81,26 @@ class Auth extends Controller
                 $twitchUserData = $responseContent['data'][0];
 
                 // Find out if we have the user
-                $status = AuthModel::loadUserSession(refUserId: $twitchUserData['id']);
-                if ($status === true) {
-                    Router::redirect();
-                    return;
+                $user = AuthModel::userById(refUserId: $twitchUserData['id']);
+                if (!empty($user)) {
+                    $userData = [
+                        'ref_access_token' => $twitch_access_token,
+                        'ref_refresh_token' => $twitch_refresh_token,
+                    ];
+                    Db::update('users', $userData, ['id' => $user['id']]);
+                } else {
+                    // If not, lets add new one into db
+                    $userData = [
+                        'ref_id' => $twitchUserData['id'],
+                        'ref_username' => $twitchUserData['login'],
+                        'email' => $twitchUserData['email'],
+                        'profile_image_url' => $twitchUserData['profile_image_url'],
+                        'ref_access_token' => $twitch_access_token,
+                        'ref_refresh_token' => $twitch_access_token,
+                    ];
+                    $user = Db::insert('users', $userData, returning: 'RETURNING id');
                 }
 
-                // If not, lets add new one into db
-                $userData = [
-                    'ref_id' => $twitchUserData['id'],
-                    'ref_username' => $twitchUserData['login'],
-                    'email' => $twitchUserData['email'],
-                    'profile_image_url' => $twitchUserData['profile_image_url'],
-                    'ref_access_token' => $twitch_access_token,
-                    'ref_refresh_token' => $twitch_access_token,
-                ];
-                $user = Db::insert('users', $userData, returning: 'RETURNING id');
                 AuthModel::loadUserSession($user['id']);
                 Router::redirect();
             } else {

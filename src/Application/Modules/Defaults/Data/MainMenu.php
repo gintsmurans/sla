@@ -14,20 +14,22 @@ class MainMenu extends Menu
     {
         $this->type = MenuType::MAIN_MENU;
         $this->menuList = [
-            'example' => [
-                'title' => '** Example **',
-                'url' => '%base_url/defaults/welcome/example',
-                'show' => function () {
-                    return Config::$items['debug'] == true;
-                },
-                'active' => function () {
-                    return Router::$method == 'example';
-                }
-            ],
+            // 'example' => [
+            //     'title' => '** Example **',
+            //     'url' => '%base_url/defaults/welcome/example',
+            //     'show' => function () {
+            //         return Config::$items['debug'] == true;
+            //     },
+            //     'active' => function () {
+            //         return Router::$method == 'example';
+            //     }
+            // ],
         ];
-        $this->postMenu = Load::view(
-            'Defaults/Views/components/user_top_menu.html',
-            return: true
-        );
+        $this->postMenu = function () {
+            return Load::view(
+                'Defaults/Views/components/user_top_menu.html',
+                return: true
+            );
+        };
     }
 }

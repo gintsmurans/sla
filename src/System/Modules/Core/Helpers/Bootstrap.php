@@ -27,7 +27,7 @@ if (php_sapi_name() === 'cli') {
         }
         $last_param = null;
 
-        switch ($param){
+        switch ($param) {
         case '--query':
         case '--post':
             $last_param = $param;
