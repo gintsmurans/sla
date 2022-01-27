@@ -7,8 +7,10 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                {{ pre_menu_content|raw }}
+            {{ pre_menu|raw }}
+
+            <ul class="navbar-nav mb-2 mb-lg-0">
+                {{ pre_menu_list|raw }}
 
                 {% for item in menu_items %}
                 <li class="nav-item{{ item.active == true ? ' menu-open' : '' }} {{ item.nav_class }}">
@@ -37,8 +39,10 @@
                 </li>
                 {% endfor %}
 
-                {{ post_menu_content|raw }}
+                {{ post_menu_list|raw }}
             </ul>
+
+            {{ post_menu|raw }}
         </div>
     </div>
 </nav>

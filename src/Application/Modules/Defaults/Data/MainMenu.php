@@ -4,6 +4,7 @@ namespace Defaults\Data;
 
 use \Core\Models\Router;
 use \Core\Models\Config;
+use \Core\Models\Load;
 use \Core\Models\Presentation\Menu;
 use \Core\Models\Presentation\MenuType;
 
@@ -24,5 +25,9 @@ class MainMenu extends Menu
                 }
             ],
         ];
+        $this->postMenu = Load::view(
+            'Defaults/Views/components/user_top_menu.html',
+            return: true
+        );
     }
 }

@@ -27,6 +27,8 @@ class Menu
     public array $menuList = [];
     public $preMenuList = '';
     public $postMenuList = '';
+    public $preMenu = '';
+    public $postMenu = '';
 
     private array $_itemDefaults = [
         'title' => 'No Title',
@@ -73,18 +75,31 @@ class Menu
 
     public function html()
     {
-        $preMenuContent = '';
+        $preMenuListContent = '';
         if (is_callable($this->preMenuList)) {
-            $preMenuContent = ($this->preMenuList)();
+            $preMenuListContent = ($this->preMenuList)();
         } else {
-            $preMenuContent = $this->preMenuList;
+            $preMenuListContent = $this->preMenuList;
+        }
+        $postMenuListContent = '';
+        if (is_callable($this->postMenuList)) {
+            $postMenuListContent = ($this->postMenuList)();
+        } else {
+            $postMenuListContent = $this->postMenuList;
+        }
+        $preMenuContent = '';
+        if (is_callable($this->preMenu)) {
+            $preMenuContent = ($this->preMenu)();
+        } else {
+            $preMenuContent = $this->preMenu;
         }
         $postMenuContent = '';
-        if (is_callable($this->postMenuList)) {
-            $postMenuContent = ($this->postMenuList)();
+        if (is_callable($this->postMenu)) {
+            $postMenuContent = ($this->postMenu)();
         } else {
-            $postMenuContent = $this->postMenuList;
+            $postMenuContent = $this->postMenu;
         }
+
 
         $menuItems = [];
         foreach ($this->menuList as $item) {
@@ -112,8 +127,10 @@ class Menu
         }
 
         $viewData = [
-            'pre_menu_content' => $preMenuContent,
-            'post_menu_content' => $postMenuContent,
+            'pre_menu_list' => $preMenuListContent,
+            'post_menu_list' => $postMenuListContent,
+            'pre_menu' => $preMenuContent,
+            'post_menu' => $postMenuContent,
             'menu_items' => $menuItems,
         ];
         return Load::view("Views/components/menu_type_{$this->type}.html", $viewData, true);
